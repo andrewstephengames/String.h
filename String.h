@@ -19,11 +19,15 @@ typedef struct {
 } String;
 
 STRDEF String StringSet (char *data);
+STRDEF String StringFree (String s);
 STRDEF static char *Overwrite (char *d, char *s);
 STRDEF char *StringToC (String s);
 STRDEF String StringCat (String s1, String s2);
 STRDEF bool StringEquals (String s1, String s2);
 STRDEF String CharToString (char c);
+STRDEF String StringTrim (String s, char c);
+STRDEF String StringToUpper (String s);
+STRDEF String StringToLower (String s);
 
 STRDEF String StringSet (char *data) {
      String s;
@@ -34,6 +38,11 @@ STRDEF String StringSet (char *data) {
      s.data = data;
      s.size = size;
      return s;
+}
+
+STRDEF String StringFree (String s) {
+     free (s.data);
+     s.size = 0;
 }
 
 STRDEF static char *Overwrite (char *d, char *s) {
@@ -74,11 +83,60 @@ STRDEF bool StringEquals (String s1, String s2) {
 }
 
 STRDEF String CharToString (char c) {
-     String s, t;
+     String s;
      s.size = 1;
      s.data = malloc (2 * sizeof(char));
+     assert (s.data != NULL && "Buy more RAM lol");
      s.data[0] = c;
      return s;
+}
+
+STRDEF String StringTrim (String s, char c) {
+     for (int i = 0; i < s.size; ++i) {
+          while (s.data[i] == c) {
+               Overwrite (s.data + i, s.data + i+1);
+               s.size--;
+          }
+     }
+     return s;
+}
+
+STRDEF String StringToUpper (String s) {
+     String t;
+     t.data = malloc (s.size + 1);
+     t.size = s.size;
+     if (t.data == NULL) {
+          assert (t.data != NULL && "Buy more RAM lol");
+          return s;
+     }
+     for (int i = 0; i < s.size; ++i) {
+          if (s.data[i] >= 'a' && s.data[i] <= 'z') {
+               t.data[i] = s.data[i] - 32;
+          }
+          else {
+               t.data[i] = s.data[i];
+          }
+     }
+     return t;
+}
+
+STRDEF String StringToLower (String s) {
+     String t;
+     t.data = malloc (s.size + 1);
+     t.size = s.size;
+     if (t.data == NULL) {
+          assert (t.data != NULL && "Buy more RAM lol");
+          return s;
+     }
+     for (int i = 0; i < s.size; ++i) {
+          if (s.data[i] >= 'A' && s.data[i] <= 'Z') {
+               t.data[i] = s.data[i] + 32;
+          }
+          else {
+               t.data[i] = s.data[i];
+          }
+     }
+     return t;
 }
 
 #endif // STRING_H_
