@@ -28,6 +28,7 @@ STRDEF String CharToString (char c);
 STRDEF String StringTrim (String s, char c);
 STRDEF String StringToUpper (String s);
 STRDEF String StringToLower (String s);
+STRDEF String Substring (String s, size_t a, size_t b);
 
 STRDEF String StringSet (char *data) {
      String s;
@@ -67,7 +68,7 @@ STRDEF char *StringToC (String s) {
      return data;
 }
 
-STRDEF String StringCat (String s1, String s2) {
+STRDEF String StringCat (String s1, String s2) { // Must use StringFree after
      String s;
      size_t size = s1.size + s2.size;
      s.data = malloc (size * 2 + 1);
@@ -101,7 +102,7 @@ STRDEF String StringTrim (String s, char c) {
      return s;
 }
 
-STRDEF String StringToUpper (String s) {
+STRDEF String StringToUpper (String s) { // Must use StringFree after
      String t;
      t.data = malloc (s.size + 1);
      t.size = s.size;
@@ -120,7 +121,7 @@ STRDEF String StringToUpper (String s) {
      return t;
 }
 
-STRDEF String StringToLower (String s) {
+STRDEF String StringToLower (String s) { // Must use StringFree after
      String t;
      t.data = malloc (s.size + 1);
      t.size = s.size;
@@ -135,6 +136,19 @@ STRDEF String StringToLower (String s) {
           else {
                t.data[i] = s.data[i];
           }
+     }
+     return t;
+}
+
+STRDEF String Substring (String s, size_t a, size_t b) { // Must use StringFree after
+     if (b == s.size) b = s.size-1;
+     assert (a < b && b < s.size && "Invalid substring.");
+     String t;
+     t.data = malloc (b - a + 2);
+     t.size = b-a+1;
+     int j = 0;
+     for (int i = a; i <= b; ++i) {
+          t.data[j++] = s.data[i];
      }
      return t;
 }
