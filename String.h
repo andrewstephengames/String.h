@@ -7,10 +7,8 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <stdbool.h>
 
-#define bool int
-#define true 1
-#define false 0
 #define space (String) { .data = " ", .size = 1 }
 
 typedef struct {
@@ -19,7 +17,7 @@ typedef struct {
 } String;
 
 STRDEF String StringSet (char *data);
-STRDEF String StringFree (String s);
+STRDEF void StringFree (String s);
 STRDEF static char *Overwrite (char *d, char *s);
 STRDEF char *StringToC (String s);
 STRDEF String StringCat (String s1, String s2);
@@ -33,7 +31,7 @@ STRDEF String Substring (String s, size_t a, size_t b);
 STRDEF String StringSet (char *data) {
      String s;
      size_t size = 0;
-     for (int i = 0; data[i] != 0; ++i) {
+     for (size_t i = 0; data[i] != 0; ++i) {
           size++;
      }
      s.data = data;
@@ -41,7 +39,7 @@ STRDEF String StringSet (char *data) {
      return s;
 }
 
-STRDEF String StringFree (String s) {
+STRDEF void StringFree (String s) {
      free (s.data);
      s.size = 0;
 }
@@ -93,7 +91,7 @@ STRDEF String CharToString (char c) {
 }
 
 STRDEF String StringTrim (String s, char c) {
-     for (int i = 0; i < s.size; ++i) {
+     for (size_t i = 0; i < s.size; ++i) {
           while (s.data[i] == c) {
                Overwrite (s.data + i, s.data + i+1);
                s.size--;
@@ -110,7 +108,7 @@ STRDEF String StringToUpper (String s) { // Must use StringFree after
           assert (t.data != NULL && "Buy more RAM lol");
           return s;
      }
-     for (int i = 0; i < s.size; ++i) {
+     for (size_t i = 0; i < s.size; ++i) {
           if (s.data[i] >= 'a' && s.data[i] <= 'z') {
                t.data[i] = s.data[i] - 32;
           }
@@ -129,7 +127,7 @@ STRDEF String StringToLower (String s) { // Must use StringFree after
           assert (t.data != NULL && "Buy more RAM lol");
           return s;
      }
-     for (int i = 0; i < s.size; ++i) {
+     for (size_t i = 0; i < s.size; ++i) {
           if (s.data[i] >= 'A' && s.data[i] <= 'Z') {
                t.data[i] = s.data[i] + 32;
           }
@@ -146,8 +144,8 @@ STRDEF String Substring (String s, size_t a, size_t b) { // Must use StringFree 
      String t;
      t.data = malloc (b - a + 2);
      t.size = b-a+1;
-     int j = 0;
-     for (int i = a; i <= b; ++i) {
+     size_t j = 0;
+     for (size_t i = a; i <= b; ++i) {
           t.data[j++] = s.data[i];
      }
      return t;
