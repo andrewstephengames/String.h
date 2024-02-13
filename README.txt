@@ -18,4 +18,4 @@ size_t StringLength (String s); // Returns the size of the String s
 bool StringStartsWith (String s, char *p); // Checks if the String s starts with the string literal p
 bool StringEndsWith (String s, char *t); // Checks if the String s ends with the string literal p
 int StringChar (String s, char c); // Returns the index of the first occurance of the char c in the String s
-String StringAtChar (String haystack, char needle); // Returns the String that starts with the first occurance of the char needle in the String haystack
+String StringAtChar (String s, char c); // Returns the String that starts with the first occurance of the char c in the String s
