@@ -36,13 +36,11 @@ STRDEF int StringChar (String s, char c);
 STRDEF String StringAtChar (String haystack, char needle);
 
 STRDEF String StringSet (char *data) {
-     String s;
-     size_t size = 0;
+     String s = {0};
      for (size_t i = 0; data[i] != 0; ++i) {
-          size++;
+          s.size++;
      }
      s.data = data;
-     s.size = size;
      return s;
 }
 
@@ -76,7 +74,7 @@ STRDEF char *StringFormat (String s) {
 STRDEF String StringCat (String s1, String s2) { // Must use StringFree after
      String s;
      size_t size = s1.size + s2.size;
-     s.data = malloc (size * 2 + 1);
+     s.data = malloc (size);
      s.size = size;
      assert (s.data != NULL && "Buy more RAM lol");
      Overwrite (s.data, s1.data);
@@ -88,19 +86,16 @@ STRDEF bool StringEquals (String s1, String s2) {
      if (s1.size != s2.size) return false;
      for (size_t i = 0; i < s1.size; ++i) {
           if (s1.data[i] != s2.data[i]) {
-               printf ("%c != %c: %d\n", s1.data[i], s2.data[i], 0);
                return false;
           }
      }
-     printf ("StringEquals (%s, %s);\n", s1.data, s2.data);
      return true;
-     //return s1.data == s2.data;
 }
 
 STRDEF String CharToString (char c) {
      String s;
      s.size = 1;
-     s.data = malloc (2 * sizeof(char));
+     s.data = malloc (sizeof(char));
      assert (s.data != NULL && "Buy more RAM lol");
      s.data[0] = c;
      return s;
@@ -119,7 +114,8 @@ STRDEF String StringTrim (String s, char c) {
 // Must use StringFree after
 STRDEF String StringReplace (String s, char a, char b) {
      String t;
-     t.data = malloc (s.size+1);
+     t.data = malloc (s.size);
+     assert (t.data != NULL && "Buy more RAM lol");
      t.size = s.size;
      for (size_t i = 0; i < s.size; ++i) {
           if (s.data[i] == a) {
@@ -134,12 +130,9 @@ STRDEF String StringReplace (String s, char a, char b) {
 
 STRDEF String StringUpper (String s) { // Must use StringFree after
      String t;
-     t.data = malloc (s.size + 1);
+     t.data = malloc (s.size);
+     assert (t.data != NULL && "Buy more RAM lol");
      t.size = s.size;
-     if (t.data == NULL) {
-          assert (t.data != NULL && "Buy more RAM lol");
-          return s;
-     }
      for (size_t i = 0; i < s.size; ++i) {
           if (s.data[i] >= 'a' && s.data[i] <= 'z') {
                t.data[i] = s.data[i] - 32;
@@ -154,11 +147,8 @@ STRDEF String StringUpper (String s) { // Must use StringFree after
 STRDEF String StringLower (String s) { // Must use StringFree after
      String t;
      t.data = malloc (s.size + 1);
+     assert (t.data != NULL && "Buy more RAM lol");
      t.size = s.size;
-     if (t.data == NULL) {
-          assert (t.data != NULL && "Buy more RAM lol");
-          return s;
-     }
      for (size_t i = 0; i < s.size; ++i) {
           if (s.data[i] >= 'A' && s.data[i] <= 'Z') {
                t.data[i] = s.data[i] + 32;
@@ -178,7 +168,8 @@ STRDEF String Substring (String s, size_t a, size_t b) { // Must use StringFree 
      }
      assert (b < s.size && "Invalid substring.");
      String t;
-     t.data = malloc (b - a + 2);
+     t.data = malloc (b-a+1);
+     assert (t.data != NULL && "Buy more RAM lol");
      t.size = b-a+1;
      size_t j = 0;
      for (size_t i = a; i <= b; ++i) {
