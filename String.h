@@ -32,6 +32,8 @@ STRDEF bool StringEmpty (String s);
 STRDEF size_t StringLength (String s);
 STRDEF bool StringStartsWith (String s, char *p);
 STRDEF bool StringEndsWith (String s, char *t);
+STRDEF int StringChar (String s, char c);
+STRDEF String StringAtChar (String haystack, char needle);
 
 STRDEF String StringSet (char *data) {
      String s;
@@ -211,6 +213,23 @@ STRDEF bool StringEndsWith (String s, char *t) {
      }
      StringFree (s);
      return false;
+}
+
+STRDEF int StringChar (String s, char c) {
+     for (size_t i = 0; i < s.size; ++i) {
+          if (s.data[i] == c)
+               return (int) i;
+     }
+     return -1;
+}
+
+STRDEF String StringAtChar (String haystack, char needle) {
+     String t = {0};
+     t.data = s.data + StringChar (s, c);
+     for (size_t i = 0; t.data[i] != 0; ++i) {
+          t.size++;
+     }
+     return t;
 }
 
 #endif // STRING_H_
