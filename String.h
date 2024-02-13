@@ -225,7 +225,7 @@ STRDEF int StringChar (String s, char c) {
 
 STRDEF String StringAtChar (String haystack, char needle) {
      String t = {0};
-     t.data = s.data + StringChar (s, c);
+     t.data = haystack.data + StringChar (haystack, needle);
      for (size_t i = 0; t.data[i] != 0; ++i) {
           t.size++;
      }
