@@ -19,14 +19,19 @@ typedef struct {
 STRDEF String StringSet (char *data);
 STRDEF void StringFree (String s);
 STRDEF static char *Overwrite (char *d, char *s);
-STRDEF char *StringToC (String s);
+STRDEF char *StringFormat (String s);
 STRDEF String StringCat (String s1, String s2);
 STRDEF bool StringEquals (String s1, String s2);
 STRDEF String CharToString (char c);
 STRDEF String StringTrim (String s, char c);
-STRDEF String StringToUpper (String s);
-STRDEF String StringToLower (String s);
+STRDEF String StringReplace (String s, char a, char b);
+STRDEF String StringUpper (String s);
+STRDEF String StringLower (String s);
 STRDEF String Substring (String s, size_t a, size_t b);
+STRDEF bool StringEmpty (String s);
+STRDEF size_t StringLength (String s);
+STRDEF bool StringStartsWith (String s, char *p);
+STRDEF bool StringEndsWith (String s, char *t);
 
 STRDEF String StringSet (char *data) {
      String s;
@@ -58,7 +63,7 @@ STRDEF static char *Overwrite (char *d, char *s) {
      return d;
 }
 
-STRDEF char *StringToC (String s) {
+STRDEF char *StringFormat (String s) {
      char *data = s.data;
      if (data == NULL) {
           data = "";
@@ -78,7 +83,16 @@ STRDEF String StringCat (String s1, String s2) { // Must use StringFree after
 }
 
 STRDEF bool StringEquals (String s1, String s2) {
-     return s1.data == s2.data;
+     if (s1.size != s2.size) return false;
+     for (size_t i = 0; i < s1.size; ++i) {
+          if (s1.data[i] != s2.data[i]) {
+               printf ("%c != %c: %d\n", s1.data[i], s2.data[i], 0);
+               return false;
+          }
+     }
+     printf ("StringEquals (%s, %s);\n", s1.data, s2.data);
+     return true;
+     //return s1.data == s2.data;
 }
 
 STRDEF String CharToString (char c) {
@@ -100,7 +114,23 @@ STRDEF String StringTrim (String s, char c) {
      return s;
 }
 
-STRDEF String StringToUpper (String s) { // Must use StringFree after
+// Must use StringFree after
+STRDEF String StringReplace (String s, char a, char b) {
+     String t;
+     t.data = malloc (s.size+1);
+     t.size = s.size;
+     for (size_t i = 0; i < s.size; ++i) {
+          if (s.data[i] == a) {
+               t.data[i] = b;
+          }
+          else {
+               t.data[i] = s.data[i];
+          }
+     }
+     return t;
+}
+
+STRDEF String StringUpper (String s) { // Must use StringFree after
      String t;
      t.data = malloc (s.size + 1);
      t.size = s.size;
@@ -119,7 +149,7 @@ STRDEF String StringToUpper (String s) { // Must use StringFree after
      return t;
 }
 
-STRDEF String StringToLower (String s) { // Must use StringFree after
+STRDEF String StringLower (String s) { // Must use StringFree after
      String t;
      t.data = malloc (s.size + 1);
      t.size = s.size;
@@ -139,8 +169,12 @@ STRDEF String StringToLower (String s) { // Must use StringFree after
 }
 
 STRDEF String Substring (String s, size_t a, size_t b) { // Must use StringFree after
-     if (b == s.size) b = s.size-1;
-     assert (a < b && b < s.size && "Invalid substring.");
+     if (a > b) {
+          size_t tmp = a;
+          a = b;
+          b = tmp;
+     }
+     assert (b < s.size && "Invalid substring.");
      String t;
      t.data = malloc (b - a + 2);
      t.size = b-a+1;
@@ -149,6 +183,34 @@ STRDEF String Substring (String s, size_t a, size_t b) { // Must use StringFree 
           t.data[j++] = s.data[i];
      }
      return t;
+}
+
+STRDEF bool StringEmpty (String s) {
+     return s.size == 0;
+}
+
+STRDEF size_t StringLength (String s) {
+     return s.size;
+}
+
+STRDEF bool StringStartsWith (String s, char *p) {
+     String prefix = StringSet (p);
+     if (prefix.size <= s.size) {
+          String pf = Substring (s, 0, prefix.size-1);
+          return StringEquals (prefix, pf);
+     }
+     StringFree (s);
+     return false;
+}
+
+STRDEF bool StringEndsWith (String s, char *t) {
+     String suffix = StringSet (t);
+     if (suffix.size <= s.size) {
+          String sf = Substring (s, s.size-1, s.size-suffix.size);
+          return StringEquals (suffix, sf);
+     }
+     StringFree (s);
+     return false;
 }
 
 #endif // STRING_H_
