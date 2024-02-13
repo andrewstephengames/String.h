@@ -20,20 +20,20 @@ STRDEF String StringSet (char *data);
 STRDEF void StringFree (String s);
 STRDEF static char *Overwrite (char *d, char *s);
 STRDEF char *StringFormat (String s);
-STRDEF String StringCat (String s1, String s2);
+STRDEF String StringCat (String s1, String s2); // StringFree
 STRDEF bool StringEquals (String s1, String s2);
-STRDEF String CharToString (char c);
+STRDEF String CharToString (char c); // StringFree
 STRDEF String StringTrim (String s, char c);
-STRDEF String StringReplace (String s, char a, char b);
-STRDEF String StringUpper (String s);
-STRDEF String StringLower (String s);
-STRDEF String Substring (String s, size_t a, size_t b);
+STRDEF String StringReplace (String s, char a, char b); // StringFree
+STRDEF String StringUpper (String s); // StringFree
+STRDEF String StringLower (String s); // StringFree
+STRDEF String Substring (String s, size_t a, size_t b); // StringFree
 STRDEF bool StringEmpty (String s);
 STRDEF size_t StringLength (String s);
 STRDEF bool StringStartsWith (String s, char *p);
 STRDEF bool StringEndsWith (String s, char *t);
 STRDEF int StringChar (String s, char c);
-STRDEF String StringAtChar (String haystack, char needle);
+STRDEF String StringAtChar (String s, char c);
 
 STRDEF String StringSet (char *data) {
      String s = {0};
@@ -214,7 +214,7 @@ STRDEF int StringChar (String s, char c) {
      return -1;
 }
 
-STRDEF String StringAtChar (String haystack, char needle) {
+STRDEF String StringAtChar (String s, char c) {
      String t = {0};
      t.data = haystack.data + StringChar (haystack, needle);
      for (size_t i = 0; t.data[i] != 0; ++i) {
